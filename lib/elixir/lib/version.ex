@@ -583,6 +583,11 @@ defmodule Version do
       maybe_prepend_buffer(buffer, acc)
     end
 
+    # Invalid UTF-8
+    defp lexer(_, _buffer, _acc) do
+      :error
+    end
+
     defp maybe_prepend_buffer("", acc), do: acc
 
     defp maybe_prepend_buffer(buffer, [head | _] = acc)

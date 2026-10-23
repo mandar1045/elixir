@@ -372,6 +372,8 @@ defmodule VersionTest do
       assert Version.parse_requirement(">= 1") == :error
       assert Version.parse_requirement("1.2.3 >=") == :error
       assert Version.parse_requirement("100000000000000.0.0") == :error
+      assert Version.parse_requirement("1.2.\xFF") == :error
+      assert Version.parse_requirement("~> 1.2 and >= 1.2.\xE5") == :error
     end
 
     test "inspect/1" do
