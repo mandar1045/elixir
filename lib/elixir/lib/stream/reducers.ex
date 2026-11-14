@@ -98,16 +98,13 @@ defmodule Stream.Reducers do
     # If the current stream fails, it is responsible for its own cleanup,
     # so we only close the streams that were already advanced and the ones
     # that were not advanced yet.
-    result =
-      try do
-        fun.({:cont, []})
-      catch
-        kind, reason ->
-          do_zip_close(:lists.reverse(buffer, zips))
-          :erlang.raise(kind, reason, __STACKTRACE__)
-      end
-
-    case result do
+    try do
+      fun.({:cont, []})
+    catch
+      kind, reason ->
+        do_zip_close(:lists.reverse(buffer, zips))
+        :erlang.raise(kind, reason, __STACKTRACE__)
+    else
       {:suspended, [elem | next_acc], fun} ->
         next_buffer = [{fun, next_acc, :cont} | buffer]
         do_zip_next(zips, acc, callback, [elem | yielded_elems], next_buffer, zip_fun)
